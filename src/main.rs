@@ -125,9 +125,12 @@ fn boot() -> (App, Task<Message>) {
 
 fn update(app: &mut App, message: Message) -> iced::Task<Message> {
     match message {
-        Message::Initialized(_) => { Task::none() },
+        Message::Initialized(main_id) => {
+            app.windows.main = Some(main_id);
+            Task::none()
+        },
         Message::WindowDragged => {
-            window::oldest().and_then(window::drag)
+            window::drag(app.windows.main.unwrap())
         },
         Message::Tick(now) => {
             let task = match app.state {
@@ -139,8 +142,7 @@ fn update(app: &mut App, message: Message) -> iced::Task<Message> {
                     if elapsed > app.config.work_duration {
                         // show mouse
                         app.state = Breaking(Instant::now());
-                        window::oldest().and_then(|id| window::set_mode(id, Mode::Windowed))
-                            
+                        window::set_mode(app.windows.main.unwrap(), Mode::Windowed)
                     } else {
                         Task::none()
                     }
@@ -151,7 +153,7 @@ fn update(app: &mut App, message: Message) -> iced::Task<Message> {
                     if elapsed > app.config.break_duration {
                         // hide mouse
                         app.state = Working(Instant::now());
-                        window::oldest().and_then(|id| window::set_mode(id, Mode::Hidden))
+                        window::set_mode(app.windows.main.unwrap(), Mode::Hidden)
                     } else {
                         Task::none()
                     }
@@ -169,7 +171,8 @@ fn update(app: &mut App, message: Message) -> iced::Task<Message> {
     }
 }
 
-fn view(_app: &App, window_id: window::Id) -> Element<'_, Message> {
+fn view(app: &App, window_id: window::Id) -> Element<'_, Message> {
+    if Some(window_id) == app.windows.main {
     mouse_area(
         container("Time for a pause!")
         .width(Length::Fill)
@@ -189,6 +192,10 @@ fn view(_app: &App, window_id: window::Id) -> Element<'_, Message> {
     )
     .on_press(Message::WindowDragged)
     .into()
+    } else {
+        "Settings"
+            .into()
+    }
 }
 
 fn subscription(_app: &App) -> iced::Subscription<Message> {
