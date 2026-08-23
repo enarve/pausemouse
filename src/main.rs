@@ -8,6 +8,7 @@ mod menu;
 use crate::app::App;
 
 fn main() -> iced::Result {
+    embed_plist::embed_info_plist!("../Info.plist");
     iced::daemon(App::boot, App::update, App::view)
         .style(|_state, _theme| iced::theme::Style {
             background_color: iced::Color::TRANSPARENT, // Removes default canvas layer
