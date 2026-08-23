@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://apple.com">
+<plist version="1.0">
+<dict>
+    <key>CFBundleIdentifier</key>
+    <string>me.enarve.pausemouse</string>
+    <key>CFBundleName</key>
+    <string>Pausemouse</string>
+
+    <!-- Hide from dock -->
+    <key>LSUIElement</key>
+    <true/>
+
+    <key>CFBundleIconFile</key>
+    <string>AppIcon</string>
+</dict>
+</plist>
