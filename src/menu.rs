@@ -1,4 +1,4 @@
-use tray_icon::{TrayIconBuilder, menu::{Menu as TrayMenu, MenuEvent, MenuItem, MenuId}};
+use tray_icon::{Icon, TrayIconBuilder, menu::{Menu as TrayMenu, MenuEvent, MenuId, MenuItem}};
 use crate::messages::Message;
 
 pub struct Menu {
@@ -47,12 +47,23 @@ impl Menu {
         let quit_id = quit_item.id().clone();
         
         tray_menu.append_items(&[&settings_item, &quit_item]).unwrap();
-    
+
+        let image_bytes: &[u8] = if cfg!(target_os = "macos") {
+            include_bytes!("../assets/mouse.png")
+        } else {
+            include_bytes!("../assets/mouse_square.png")
+        };
+
+        let img = image::load_from_memory(image_bytes)
+            .expect("Failed to load icon.")
+            .into_rgba8();
+        let (width, height) = (img.width(), img.height());
+        let icon = Icon::from_rgba(img.into_raw(), width, height).unwrap();
+        
         let tray = TrayIconBuilder::new()
             .with_menu(Box::new(tray_menu))
             .with_tooltip("Pausemouse")
-            // TODO: Add icon
-            // .with_icon(some_icon)
+            .with_icon(icon)
             .build()
             .unwrap();
     
