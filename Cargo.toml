@@ -4,5 +4,13 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
+embed_plist = "1.2.2"
 iced = { version = "0.14.0", features = ["tokio"] }
+image = "0.25.10"
 tray-icon = "0.24.2"
+
+[package.metadata.bundle]
+name = "Pausemouse"
+identifier = "me.enarve.pausemouse"
+icon = ["assets/app.png"]
+info_plist = "Info.plist"
