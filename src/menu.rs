@@ -1,10 +1,10 @@
-use tray_icon::{TrayIconBuilder, menu};
+use tray_icon::{TrayIconBuilder, menu::{Menu as TrayMenu, MenuEvent, MenuItem, MenuId}};
 use crate::messages::Message;
 
 pub struct Menu {
     pub tray_handle: Option<tray_icon::TrayIcon>,
-    pub settings_menu_id: Option<tray_icon::menu::MenuId>,
-    pub quit_menu_id: Option<tray_icon::menu::MenuId>,
+    pub settings_menu_id: Option<MenuId>,
+    pub quit_menu_id: Option<MenuId>,
 }
 
 impl Default for Menu {
@@ -18,11 +18,10 @@ impl Default for Menu {
 }
 
 impl Menu {
-
     pub fn subscription() -> iced::Subscription<Message> {
         iced::Subscription::run(|| {
             iced::stream::channel(100, |mut output: iced::futures::channel::mpsc::Sender<Message>| async move {
-                let receiver = tray_icon::menu::MenuEvent::receiver();
+                let receiver = MenuEvent::receiver();
                 let (tx, mut rx) = iced::futures::channel::mpsc::channel::<Message>(10);
                 std::thread::spawn(move || {
                     loop {
@@ -39,10 +38,10 @@ impl Menu {
         })
     }
     
-    pub fn init() -> (tray_icon::TrayIcon, tray_icon::menu::MenuId, tray_icon::menu::MenuId) {
-        let tray_menu = menu::Menu::new();
-        let settings_item = menu::MenuItem::new("Settings...", true, None);
-        let quit_item = menu::MenuItem::new("Quit Pausemouse", true, None);
+    pub fn init() -> (tray_icon::TrayIcon, MenuId, MenuId) {
+        let tray_menu = TrayMenu::new();
+        let settings_item = MenuItem::new("Settings...", true, None);
+        let quit_item = MenuItem::new("Quit Pausemouse", true, None);
         
         let settings_id = settings_item.id().clone();
         let quit_id = quit_item.id().clone();
@@ -59,5 +58,4 @@ impl Menu {
     
         (tray, settings_id, quit_id)
     }
-
 }
