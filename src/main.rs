@@ -5,17 +5,20 @@ mod model;
 mod messages;
 mod menu;
 
-use crate::app::App;
+use iced::{daemon, theme, Color, Result};
+use embed_plist::embed_info_plist;
+use crate::app::{boot, update, view, subscription, title};
 
-fn main() -> iced::Result {
-    embed_plist::embed_info_plist!("../Info.plist");
-    iced::daemon(App::boot, App::update, App::view)
-        .style(|_state, _theme| iced::theme::Style {
-            background_color: iced::Color::TRANSPARENT, // Removes default canvas layer
-            text_color: iced::Color::WHITE,
+fn main() -> Result {
+    embed_info_plist!("../Info.plist");
+    
+    daemon(boot, update, view)
+        .style(|_state, _theme| theme::Style {
+            background_color: Color::TRANSPARENT,
+            text_color: Color::WHITE,
         })
-        .subscription(App::subscription)
-        .title(App::title)
+        .subscription(subscription)
+        .title(title)
         .run()
 }
 
