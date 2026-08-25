@@ -4,6 +4,7 @@ use iced::{Color, Element, Length, Size, Task, border};
 use iced::widget::{container, mouse_area};
 use iced::window::{self, Mode};
 
+use crate::constants;
 use crate::model::{State, Windows, Config, SettingsInputBuffer};
 use crate::messages::Message;
 use crate::menu::Menu;
@@ -72,7 +73,6 @@ pub fn update(app: &mut App, message: Message) -> iced::Task<Message> {
                 
                 Working(start_time) => {
                     let elapsed = now.duration_since(start_time);
-                    println!("{:?}", elapsed);
                     
                     if elapsed > app.config.work_duration {
                         // show mouse
@@ -127,6 +127,7 @@ pub fn update(app: &mut App, message: Message) -> iced::Task<Message> {
             if Some(&clicked_id) == app.menu.settings_menu_id.as_ref() {
                 return update(app, Message::OpenSettings);
             } else if Some(&clicked_id) == app.menu.quit_menu_id.as_ref() {
+                println!("{}", constants::FAREWELL_MESSAGE);
                 std::process::exit(0);
             }
             Task::none()

@@ -4,12 +4,15 @@ mod app;
 mod model;
 mod messages;
 mod menu;
+mod constants;
 
 use iced::{daemon, theme, Color, Result};
 use embed_plist::embed_info_plist;
 use crate::app::{boot, update, view, subscription, title};
 
 fn main() -> Result {
+    println!("{}", constants::greeting_message());
+    
     embed_info_plist!("../Info.plist");
     
     daemon(boot, update, view)
@@ -21,5 +24,7 @@ fn main() -> Result {
         .title(title)
         .run()
 }
+
+
 
 
