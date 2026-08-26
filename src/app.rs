@@ -1,10 +1,11 @@
 use std::time::{Instant, Duration};
 
-use iced::{Color, Element, Length, Size, Task, border};
-use iced::widget::{container, mouse_area};
+use iced::{Color, Element, Length, Size, Task, border, Alignment, Font, padding};
+use iced::widget::{container, mouse_area, text, column, progress_bar};
 use iced::window::{self, Mode};
 
-use crate::constants;
+use crate::strings;
+use crate::constants::{MAIN_WINDOW_WIDTH, MAIN_WINDOW_HEIGHT, SETTINGS_WINDOW_WIDTH, SETTINGS_WINDOW_HEIGHT};
 use crate::model::{State, Windows, Config, SettingsInputBuffer};
 use crate::messages::Message;
 use crate::menu::Menu;
@@ -40,7 +41,7 @@ pub fn boot() -> (App, Task<Message>) {
     app.menu.quit_menu_id = Some(quit_id);
     
     let main_window_settings = window::Settings {
-        size: Size::new(250.0, 100.0),
+        size: Size::new(MAIN_WINDOW_WIDTH, MAIN_WINDOW_HEIGHT),
         position: window::Position::Centered,
         decorations: false,
         transparent: true,
@@ -56,7 +57,7 @@ pub fn boot() -> (App, Task<Message>) {
 }
 
 pub fn title(_app: &App, _window_id: window::Id) -> String {
-    String::from("Pausemouse")
+    String::from(strings::TITLE)
 }
 
 pub fn update(app: &mut App, message: Message) -> iced::Task<Message> {
@@ -99,7 +100,7 @@ pub fn update(app: &mut App, message: Message) -> iced::Task<Message> {
         Message::OpenSettings => {
             if let None = app.windows.settings {
                 let settings_window_settings = window::Settings {
-                    size: Size::new(300.0, 200.0),
+                    size: Size::new(SETTINGS_WINDOW_WIDTH, SETTINGS_WINDOW_HEIGHT),
                     resizable: false,
                     exit_on_close_request: false,
                     ..Default::default()
@@ -127,7 +128,7 @@ pub fn update(app: &mut App, message: Message) -> iced::Task<Message> {
             if Some(&clicked_id) == app.menu.settings_menu_id.as_ref() {
                 return update(app, Message::OpenSettings);
             } else if Some(&clicked_id) == app.menu.quit_menu_id.as_ref() {
-                println!("{}", constants::FAREWELL_MESSAGE);
+                println!("{}", strings::FAREWELL);
                 std::process::exit(0);
             }
             Task::none()
@@ -137,8 +138,22 @@ pub fn update(app: &mut App, message: Message) -> iced::Task<Message> {
 
 pub fn view(app: &App, window_id: window::Id) -> Element<'_, Message> {
     if Some(window_id) == app.windows.main {
+        let now = Instant::now();
+        let elapsed = if let State::Working(time) = app.state { now.duration_since(time).as_secs_f32() } else { 0.0 };
         mouse_area(
-            container("Time for a pause!")
+            container(
+                column![
+                    text(strings::BREAK)
+                        .font(Font::MONOSPACE),
+                    text(strings::ASCII_ART)
+                        .font(Font::MONOSPACE),
+                    container (progress_bar(0.0..=60.0, 20.0))
+                        .padding([20.0, 10.0]),
+                    text(strings::next_break())
+                        .font(Font::MONOSPACE)
+                ]
+                .align_x(Alignment::Center)
+            )
             .width(Length::Fill)
             .height(Length::Fill)
             .center_x(Length::Fill)

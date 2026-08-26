@@ -1,13 +1,7 @@
 // Constants
-pub const ASCII_ART: &str = r#" _  _
-(o)(o)--.
- \../ (  )hjw
- m\/m--m'`--."#;
 
-pub const FAREWELL_MESSAGE: &str = "Pausemouse ran away... See you next time!";
+pub const MAIN_WINDOW_WIDTH: f32 = 250.0;
+pub const MAIN_WINDOW_HEIGHT: f32 = 250.0;
 
-// Compound greeting message
-pub fn greeting_message() -> String {
-    let version = env!("CARGO_PKG_VERSION");
-    format!("{}\n\nPausemouse v{} is running!\n", ASCII_ART, version)
-}
+pub const SETTINGS_WINDOW_WIDTH: f32 = 300.0;
+pub const SETTINGS_WINDOW_HEIGHT: f32 = 200.0;
