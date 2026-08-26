@@ -1,6 +1,6 @@
 use std::time::{Instant, Duration};
 
-use iced::{Color, Element, Length, Size, Task, border, Alignment, Font};
+use iced::{Color, Element, Length, Size, Task, border, Alignment, Font, Background, Border};
 use iced::widget::{container, mouse_area, text, column, row, progress_bar, text_input};
 use iced::window::{self, Mode};
 
@@ -179,8 +179,17 @@ pub fn view(app: &App, window_id: window::Id) -> Element<'_, Message> {
                     text(strings::BREAK),
                     text(strings::ASCII_ART)
                         .font(Font::MONOSPACE),
-                    container (progress_bar(0.0..=app.config.break_duration.as_secs_f32(), elapsed))
-                        .padding([20.0, 10.0]),
+                    container (progress_bar(0.0..=app.config.break_duration.as_secs_f32(), elapsed)
+                        .girth(15.0)
+                        .style(|_theme| {
+                                progress_bar::Style {
+                                    bar: Background::Color(Color::from_rgba(1.0, 1.0, 1.0, 1.0)), 
+                                    background: Background::Color(Color::from_rgba(1.0, 1.0, 1.0, 0.2)), 
+                                    border: Border::default(), 
+                                }
+                            })
+                    )    
+                        .padding([20.0, 20.0]),
                     text(strings::next_break(app.config.work_duration))
                 ]
                 .align_x(Alignment::Center)
