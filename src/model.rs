@@ -9,22 +9,23 @@ pub struct Config {
 impl Default for Config {
     fn default() -> Self {
         Self {
-            work_duration: Duration::from_secs(15),
-            break_duration: Duration::from_secs(10)
+            work_duration: Duration::from_secs(10),
+            break_duration: Duration::from_secs(60)
         }
     }
 }
 
+#[derive(Clone)]
 pub struct SettingsInputBuffer {
-    pub _work_duration_input: String,
-    pub _break_duration_input: String,
+    pub work_duration_input: String,
+    pub break_duration_input: String,
 }
 
 impl SettingsInputBuffer {
     fn from_config(config: &Config) -> Self {
         Self {
-            _work_duration_input: config.work_duration.as_secs().to_string(),
-            _break_duration_input: config.break_duration.as_secs().to_string(),
+            work_duration_input: config.work_duration.as_secs().to_string(),
+            break_duration_input: config.break_duration.as_secs().to_string(),
         }
     }
 }

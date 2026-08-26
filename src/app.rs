@@ -1,7 +1,7 @@
 use std::time::{Instant, Duration};
 
-use iced::{Color, Element, Length, Size, Task, border, Alignment, Font, padding};
-use iced::widget::{container, mouse_area, text, column, progress_bar};
+use iced::{Color, Element, Length, Size, Task, border, Alignment, Font};
+use iced::widget::{container, mouse_area, text, column, row, progress_bar, text_input};
 use iced::window::{self, Mode};
 
 use crate::strings;
@@ -16,7 +16,7 @@ pub struct App {
     windows: Windows,
     config: Config,
     menu: Menu,
-    _settings_input_buffer: Option<SettingsInputBuffer>,
+    settings_input_buffer: SettingsInputBuffer,
 }
 
 impl Default for App {
@@ -27,7 +27,7 @@ impl Default for App {
             windows: Windows::default(),
             config: Config::default(),
             menu: Menu::default(),
-            _settings_input_buffer: Option::None,
+            settings_input_buffer: SettingsInputBuffer::default(),
         }
     }
 }
@@ -107,6 +107,7 @@ pub fn update(app: &mut App, message: Message) -> iced::Task<Message> {
                 };
                 let (settings_id, open_task) = window::open(settings_window_settings);
                 app.windows.settings = Some(settings_id);
+                app.settings_input_buffer = SettingsInputBuffer { work_duration_input: format!("{}", app.config.work_duration.as_secs_f32()), break_duration_input: format!("{}", app.config.break_duration.as_secs_f32()) };
                 open_task.discard()
             } else {
                 let id = app.windows.settings.unwrap();
@@ -133,24 +134,54 @@ pub fn update(app: &mut App, message: Message) -> iced::Task<Message> {
             }
             Task::none()
         },
+        Message::WorkDurationChanged(string) => {
+            app.settings_input_buffer.work_duration_input = string;
+            Task::none()
+        },
+        Message::BreakDurationChanged(string) => {
+            app.settings_input_buffer.break_duration_input = string;
+            Task::none()
+        },
+        Message::BreakDurationSubmitted => {
+            let string = &app.settings_input_buffer.break_duration_input;
+            match string.parse::<f32>() {
+                Err(_) => (),
+                Ok(value) => {
+                    if value > 0.0 {
+                        app.config.break_duration = Duration::from_secs_f32(value);
+                    }
+                }
+            }
+            Task::none()
+        },
+        Message::WorkDurationSubmitted => {
+            let string = &app.settings_input_buffer.work_duration_input;
+            match string.parse::<f32>() {
+                Err(_) => (),
+                Ok(value) => {
+                    if value > 0.0 {
+                        app.config.work_duration = Duration::from_secs_f32(value);
+                    }
+                }
+            }
+            Task::none()
+        }
     }
 }
 
 pub fn view(app: &App, window_id: window::Id) -> Element<'_, Message> {
     if Some(window_id) == app.windows.main {
         let now = Instant::now();
-        let elapsed = if let State::Working(time) = app.state { now.duration_since(time).as_secs_f32() } else { 0.0 };
+        let elapsed = if let State::Breaking(time) = app.state { now.duration_since(time).as_secs_f32() } else { 0.0 };
         mouse_area(
             container(
                 column![
-                    text(strings::BREAK)
-                        .font(Font::MONOSPACE),
+                    text(strings::BREAK),
                     text(strings::ASCII_ART)
                         .font(Font::MONOSPACE),
-                    container (progress_bar(0.0..=60.0, 20.0))
+                    container (progress_bar(0.0..=app.config.break_duration.as_secs_f32(), elapsed))
                         .padding([20.0, 10.0]),
-                    text(strings::next_break())
-                        .font(Font::MONOSPACE)
+                    text(strings::next_break(app.config.work_duration))
                 ]
                 .align_x(Alignment::Center)
             )
@@ -172,7 +203,35 @@ pub fn view(app: &App, window_id: window::Id) -> Element<'_, Message> {
         .on_press(Message::WindowDragged)
         .into()
     } else {
-        container("Settings")
+        container(
+            column![
+                container(
+                text(strings::SETTINGS_TITLE)
+                ).padding(5).center_x(Length::Fill),
+                container(
+                    column![
+                        row![
+                            text(strings::WORK_SETTING_LABEL),
+                            text_input(&format!("{:?}", app.config.work_duration), &app.settings_input_buffer.work_duration_input)
+                                .on_input(Message::WorkDurationChanged)
+                                .on_submit(Message::WorkDurationSubmitted)
+                        ]
+                        .align_y(Alignment::Center)
+                        .spacing(5),
+                        row![
+                            text(strings::BREAK_SETTING_LABEL),
+                            text_input(&format!("{:?}", app.config.break_duration), &app.settings_input_buffer.break_duration_input)
+                                .on_input(Message::BreakDurationChanged)
+                                .on_submit(Message::BreakDurationSubmitted)
+                        ]
+                        .align_y(Alignment::Center)
+                        .spacing(5)
+                    ]
+                    .spacing(10)
+                )
+                .padding([10, 20])
+            ]
+        )
         .width(Length::Fill)
         .height(Length::Fill)
         .center_x(Length::Fill)

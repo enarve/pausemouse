@@ -10,4 +10,8 @@ pub enum Message {
     OpenSettings,
     MenuClicked(menu::MenuId),
     WindowClosed(window::Id),
+    WorkDurationChanged(String),
+    BreakDurationChanged(String),
+    WorkDurationSubmitted,
+    BreakDurationSubmitted,
 }

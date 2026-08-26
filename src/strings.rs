@@ -19,7 +19,10 @@ pub fn greeting() -> String {
     format!("{}\n\nPausemouse v{} is running!\n", ASCII_ART, version)
 }
 
-pub fn next_break() -> String {
-    let work_duration = Duration::from_secs(60);
-    format!("Next break in {:?}", work_duration)
+pub fn next_break(duration: Duration) -> String {
+    format!("Next break in {:?}", duration)
 }
+
+pub const SETTINGS_TITLE: &str = "Time settings in seconds";
+pub const WORK_SETTING_LABEL: &str = "Work";
+pub const BREAK_SETTING_LABEL: &str = "Break";
