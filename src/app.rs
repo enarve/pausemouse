@@ -3,6 +3,7 @@ use std::time::{Instant, Duration};
 use iced::{Color, Element, Length, Size, Task, border, Alignment, Font, Background, Border};
 use iced::widget::{container, mouse_area, text, column, row, progress_bar, text_input};
 use iced::window::{self, Mode};
+use iced::theme::{Palette, Theme};
 
 use crate::strings;
 use crate::constants::{MAIN_WINDOW_WIDTH, MAIN_WINDOW_HEIGHT, SETTINGS_WINDOW_WIDTH, SETTINGS_WINDOW_HEIGHT};
@@ -254,4 +255,15 @@ pub fn subscription(_app: &App) -> iced::Subscription<Message> {
     let close = window::close_requests().map(Message::WindowClosed);
     let menu = Menu::subscription();
     iced::Subscription::batch(vec![ticker, close, menu])
+}
+
+pub fn custom_theme() -> Theme {
+    Theme::custom(
+        "Pausemouse",
+        Palette {
+            primary: Color::from_rgba(1.0, 1.0, 1.0, 0.6),
+            
+            ..Palette::DARK
+        },
+    )
 }

@@ -9,7 +9,7 @@ mod constants;
 
 use iced::{Color, Result, daemon, theme};
 use embed_plist::embed_info_plist;
-use crate::app::{boot, update, view, subscription, title};
+use crate::app::{boot, update, view, subscription, title, custom_theme};
 
 fn main() -> Result {
     println!("{}", strings::greeting());
@@ -23,6 +23,7 @@ fn main() -> Result {
         })
         .subscription(subscription)
         .title(title)
+        .theme(custom_theme())
         .run()
 }
 
