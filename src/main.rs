@@ -1,6 +1,7 @@
 #![windows_subsystem = "windows"] // windows-specific: hide default terminal window
 
 mod app;
+mod config;
 mod model;
 mod messages;
 mod menu;

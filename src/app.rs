@@ -7,7 +7,8 @@ use iced::theme::{Palette, Theme};
 
 use crate::strings;
 use crate::constants::{MAIN_WINDOW_WIDTH, MAIN_WINDOW_HEIGHT, SETTINGS_WINDOW_WIDTH, SETTINGS_WINDOW_HEIGHT};
-use crate::model::{State, Windows, Config, SettingsInputBuffer};
+use crate::model::{State, Windows, SettingsInputBuffer};
+use crate::config::Config;
 use crate::messages::Message;
 use crate::menu::Menu;
 use self::State::{Breaking, Working};

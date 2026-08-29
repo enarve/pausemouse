@@ -1,19 +1,7 @@
-use std::time::{Instant, Duration};
+use std::time::{Instant};
 use iced::window;
 
-pub struct Config {
-    pub work_duration: Duration,
-    pub break_duration: Duration,
-}
-
-impl Default for Config {
-    fn default() -> Self {
-        Self {
-            work_duration: Duration::from_secs(10),
-            break_duration: Duration::from_secs(60)
-        }
-    }
-}
+use crate::config::Config;
 
 #[derive(Clone)]
 pub struct SettingsInputBuffer {
