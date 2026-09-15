@@ -122,7 +122,11 @@ pub fn update(app: &mut App, message: Message) -> iced::Task<Message> {
             if let Some(settings_id) = app.windows.settings {
                 if id == settings_id {
                     app.windows.settings = None;
-                    return window::close(id); 
+                    return Task::batch(vec![
+                        window::close(id),
+                        Task::done(Message::BreakDurationSubmitted),
+                        Task::done(Message::WorkDurationSubmitted),
+                    ]);
                 }
             }
             Task::none()
@@ -151,6 +155,7 @@ pub fn update(app: &mut App, message: Message) -> iced::Task<Message> {
                 Ok(value) => {
                     if value > 0.0 {
                         app.config.break_duration = Duration::from_secs_f32(value);
+                        _ = app.config.write();
                     }
                 }
             }
@@ -163,6 +168,7 @@ pub fn update(app: &mut App, message: Message) -> iced::Task<Message> {
                 Ok(value) => {
                     if value > 0.0 {
                         app.config.work_duration = Duration::from_secs_f32(value);
+                        _ = app.config.write();
                     }
                 }
             }

@@ -4,11 +4,14 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-config = "0.15.25"
+directories = "6.0.0"
 embed_plist = "1.2.2"
+humantime = "2.4.0"
 iced = { version = "0.14.0", features = ["tokio"] }
 image = "0.25.10"
 serde = "1.0.229"
+serde_with = "3.23.0"
+toml = "1.1.6"
 tray-icon = "0.24.2"
 
 [package.metadata.bundle]

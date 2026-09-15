@@ -1,4 +1,5 @@
 use std::time::Duration;
+use humantime;
 
 // Strings
 
@@ -20,7 +21,7 @@ pub fn greeting() -> String {
 }
 
 pub fn next_break(duration: Duration) -> String {
-    format!("Next break in {:?}", duration)
+    format!("Next break in {}", humantime::format_duration(duration))
 }
 
 pub const SETTINGS_TITLE: &str = "Time settings in seconds";
