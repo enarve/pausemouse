@@ -21,4 +21,6 @@ $ ./bundle.sh
 ```
 It will appear in `target/bundle/osx`.
 
-Config is stored at `/pausemause/config.toml` in your system's default config directory.
+## Config
+
+Config is stored at `pausemause/config.toml` in your system's default config directory.
