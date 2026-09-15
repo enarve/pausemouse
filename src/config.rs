@@ -34,7 +34,7 @@ impl Config {
     
     pub fn config_path() -> String {
         let base_dir = BaseDirs::new().expect("Couldn't find base directory!");
-        let config_dir = base_dir.config_dir().join(".pausemause");
+        let config_dir = base_dir.config_dir().join("pausemause");
         std::fs::create_dir_all(&config_dir).expect("Couldn't create directory for config.toml file.");
         let config_file_binding = config_dir.join("config.toml");
         let config_file = config_file_binding.to_str().unwrap();
